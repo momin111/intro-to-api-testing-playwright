@@ -42,7 +42,7 @@ test('post order with correct data should receive code 200', async ({ request })
   expect(response.status()).toBe(StatusCodes.OK)
 })
 
-test('post order with closed status should receive bad request as a response ', async ({ request, }) => {
+test('post order with closed status should receive bad request as a response ', async ({ request }) => {
   // prepare request body
   const requestBody = {
     status: 'CLOSED',
