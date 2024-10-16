@@ -196,7 +196,7 @@ test('Delete order: with empty api key should receive status Unauthorized', asyn
   const requestHeader = {
     api_key: ' ',
   }
-  const response = await request.delete('https://backend.tallinn-learning.ee/test-orders/2', {
+  const response = await request.delete('https://backend.tallinn-learning.ee/test-orders/3', {
     headers: requestHeader,
   })
   // Log the response status and body
