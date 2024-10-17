@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test'
 
 import { StatusCodes } from 'http-status-codes'
 
-test('Get order: with correct id should receive code 200', async ({ request }) => {
+test('Get order: with correct id should receive status code OK', async ({ request }) => {
   // Build and send a GET request to the server
   const response = await request.get('https://backend.tallinn-learning.ee/test-orders/3')
   // Log the response status, body and headers
@@ -22,7 +22,7 @@ test('Get order: with incorrect id should receive code 400', async ({ request })
   expect(response.status()).toBe(StatusCodes.BAD_REQUEST)
 })
 
-test('Create order: with correct data should receive code 200', async ({ request }) => {
+test('Create order: with correct data should receive status code OK', async ({ request }) => {
   // prepare request body
   const requestBody = {
     status: 'OPEN',
@@ -62,7 +62,7 @@ test('Create order: with closed status data should receive bad request', async (
   expect(response.status()).toBe(StatusCodes.BAD_REQUEST)
 })
 
-test('Update order: with correct data should receive status code 200', async ({ request }) => {
+test('Update order: with correct data should receive status status code OK', async ({ request }) => {
   // prepare request body
   const requestBody = {
     status: 'OPEN',
@@ -155,7 +155,7 @@ test('Update order: with empty api key should receive status BadRequest', async 
   expect(response.status()).toBe(StatusCodes.UNAUTHORIZED)
 })
 
-test('Delete order: with correct data should receive code 204', async ({ request }) => {
+test('Delete order: with correct data should receive status code NO_CONTENT', async ({ request }) => {
   // Send a DEL request to the server
   const requestHeader = {
     api_key: '1234567890123456',
@@ -165,7 +165,7 @@ test('Delete order: with correct data should receive code 204', async ({ request
   })
   // Log the response status and body
   console.log('response status:', response.status())
-  expect(response.status()).toBe(204)
+  expect(response.status()).toBe(StatusCodes.NO_CONTENT)
 })
 test('Delete order: with zero order id should receive status BarRequest', async ({ request }) => {
   // Send a DEL request to the server
