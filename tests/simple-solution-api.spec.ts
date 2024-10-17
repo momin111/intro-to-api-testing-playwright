@@ -62,7 +62,9 @@ test('Create order: with closed status data should receive bad request', async (
   expect(response.status()).toBe(StatusCodes.BAD_REQUEST)
 })
 
-test('Update order: with correct data should receive status status code OK', async ({ request }) => {
+test('Update order: with correct data should receive status status code OK', async ({
+  request,
+}) => {
   // prepare request body
   const requestBody = {
     status: 'OPEN',
@@ -155,7 +157,9 @@ test('Update order: with empty api key should receive status BadRequest', async 
   expect(response.status()).toBe(StatusCodes.UNAUTHORIZED)
 })
 
-test('Delete order: with correct data should receive status code NO_CONTENT', async ({ request }) => {
+test('Delete order: with correct data should receive status code NO_CONTENT', async ({
+  request,
+}) => {
   // Send a DEL request to the server
   const requestHeader = {
     api_key: '1234567890123456',
