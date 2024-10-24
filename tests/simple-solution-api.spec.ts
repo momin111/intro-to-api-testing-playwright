@@ -2,7 +2,6 @@ import { expect, test } from '@playwright/test'
 
 import { StatusCodes } from 'http-status-codes'
 import { OrderDto } from './dto/order-dto'
-import exp from 'node:constants'
 
 test('Get order: with correct id should receive status code OK', async ({ request }) => {
   // Build and send a GET request to the server
@@ -27,9 +26,9 @@ test('Get order: with incorrect id should receive code 400', async ({ request })
 test('Create order: with correct data should receive status code OK', async ({ request }) => {
   // prepare request body
   const orderDto = OrderDto.createOrderWithRandomData()
-  orderDto.customerName = "Jonathan"// we can modify any specific value and request
+  orderDto.customerName = 'Jonathan' // we can modify any specific value and request
   const response = await request.post('https://backend.tallinn-learning.ee/test-orders', {
-    data: orderDto
+    data: orderDto,
     // Send a POST request to the server
   })
   // Log the response status and body
@@ -39,8 +38,8 @@ test('Create order: with correct data should receive status code OK', async ({ r
   const responseBody = await response.json()
   expect(response.status()).toBe(StatusCodes.OK)
   expect.soft(response.status()).toBe(StatusCodes.OK)
-  expect.soft(responseBody.status).toBe("OpPEN")
-  expect.soft(responseBody.customerName).toBe("Jonathan")
+  expect.soft(responseBody.status).toBe('OpPEN')
+  expect.soft(responseBody.customerName).toBe('Jonathan')
 })
 
 test('Create order: with closed status data should receive bad request', async ({ request }) => {
@@ -83,25 +82,12 @@ test('Update order: with correct data should receive status status code OK', asy
 })
 
 test('Update order: with closed status should receive status BadRequest', async ({ request }) => {
-  // prepare request body
-  //const requestBody = {
-  // status: 'CLOSED',
-  // courierId: 3,
-  // customerName: 'Jhon Lockey',
-  // customerPhone: '+37255855545',
-  // comment: 'Update old orders',
-  // id: 3,
-  // }
-  // Send a PUT request to the server
   const requestHeader = {
     api_key: '1234567890123456',
   }
   const response = await request.post('https://backend.tallinn-learning.ee/test-orders', {
     data: OrderDto.createOrderWithIncorrectRandomData(),
     headers: requestHeader,
-    //const response = await request.put('https://backend.tallinn-learning.ee/test-orders/2', {
-    // data: requestBody,
-    // headers: requestHeader,
   })
   // Log the response status and body
   console.log('response status:', response.status())
