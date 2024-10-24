@@ -39,11 +39,6 @@ jobs:
           echo "Running TypeScript compiler to check for type issues..."
           npx tsc --noEmit
 
-      - name: Run Playwright API tests
-        run: |
-          echo "Running Playwright to execute API tests..."
-          npx playwright test  
-
       - name: Run API Test
         env:
           USER: ${{ secrets.USER }}
