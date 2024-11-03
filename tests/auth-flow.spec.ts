@@ -5,7 +5,7 @@ import { OrderDto } from './dto/order-dto'
 
 const serviceURL = 'https://backend.tallinn-learning.ee/'
 const loginPath = 'login/student'
-const orderPath  = 'orders'
+const orderPath = 'orders'
 
 test('Login with incorrect credentials and get auth code 401', async ({ request }) => {
   // Build and send a GET request to the server
@@ -32,7 +32,7 @@ test('Successful authorization and create order', async ({ request }) => {
   const response = await request.post(`${serviceURL}${loginPath}`, {
     data: loginDto,
   })
-  const jwt = await  response.text() //define jwt
+  const jwt = await response.text() //define jwt
   console.log('response status:', response.status())
   expect.soft(response.status()).toBe(StatusCodes.OK)
   console.log(await response.text())
@@ -40,13 +40,12 @@ test('Successful authorization and create order', async ({ request }) => {
   orderDto.id = undefined
   const orderResponse = await request.post(`${serviceURL}${orderPath}`, {
     data: orderDto,
-    headers:{
+    headers: {
       Authorization: `Bearer ${jwt}`, //use jwt
-    }
+    },
   })
   const orderResponseJSON = await orderResponse.json()
   console.log(orderResponseJSON)
-  expect.soft(orderResponseJSON.status).toBe("OPEN")
+  expect.soft(orderResponseJSON.status).toBe('OPEN')
   expect.soft(orderResponseJSON.id).toBeDefined()
-
 })
