@@ -30,13 +30,10 @@ export class ApiClient {
     const authResponse = await this.request.post(`${serviceURL}${loginPath}`, {
       data: LoginDto.createLoginWithCorrectCredentials(),
     })
-    // Check response status for negative cases
     if (authResponse.status() !== StatusCodes.OK) {
       console.log('Authorization failed')
       throw new Error(`Request failed with status ${authResponse.status()}`)
     }
-
-    // Save the JWT token as a client property
     this.jwt = await authResponse.text()
     console.log('jwt received:')
     console.log(this.jwt)
@@ -51,12 +48,39 @@ export class ApiClient {
       },
     })
     console.log('Order response: ', response)
-
     expect(response.status()).toBe(StatusCodes.OK)
     const responseBody = await response.json()
     console.log('Order created: ')
     console.log(responseBody)
-
     return responseBody.id
+  }
+
+  async getOrderId(orderId: number): Promise<void> {
+    console.log(`Get order with ID ${orderId}`)
+    const response = await this.request.get(`${serviceURL}${orderPath}/${orderId}`, {
+      headers: {
+        Authorization: `Bearer ${this.jwt}`,
+      },
+    })
+    console.log('Order ID: ', response)
+
+    expect(response.status()).toBe(StatusCodes.OK)
+    const order = await response.json()
+    const { id } = order
+    expect.soft(id).toBeDefined()
+    expect.soft(id).toBe(orderId)
+  }
+  async deleteOrderId(orderId: number): Promise<void> {
+    console.log('Deleting order...')
+    const response = await this.request.delete(`${serviceURL}${orderPath}/${orderId}`, {
+      headers: {
+        Authorization: `Bearer ${this.jwt}`,
+      },
+    })
+    console.log('Delete response: ', response)
+    expect(response.status()).toBe(StatusCodes.OK)
+    const body = await response.json()
+    console.log('Order deleted: ')
+    console.log(body)
   }
 }
