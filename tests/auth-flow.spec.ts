@@ -6,7 +6,7 @@ import { OrderDto } from './dto/order-dto'
 const serviceURL = 'https://backend.tallinn-learning.ee/'
 const loginPath = 'login/student'
 const orderPath = 'orders'
-
+//all the test cases
 test('Login with incorrect credentials and get auth code 401', async ({ request }) => {
   // Build and send a GET request to the server
   const loginDto = LoginDto.createLoginWithIncorrectCredentials()
