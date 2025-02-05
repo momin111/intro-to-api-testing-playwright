@@ -1,14 +1,30 @@
 import { expect, test } from '@playwright/test'
 import { StatusCodes } from 'http-status-codes'
 import { LoginDto } from './dto/login-dto'
-import { OrderDto } from './dto/order-dto'
 
 const serviceURL = 'https://backend.tallinn-learning.ee/'
 const loginPath = 'login/student'
-const orderPath = 'orders'
-//all the test cases
+
+test('Login with Correct credentials and return code 200', async ({ request }) => {
+  const loginDto = LoginDto.createLoginWithCorrectCredentials()
+  const response = await request.post(`${serviceURL}${loginPath}`, {
+    data: loginDto,
+  })
+  console.log('response status:', response.status())
+  expect.soft(response.status()).toBe(StatusCodes.OK)
+  console.log(await response.text())
+})
+test('With correct request verify response contain a valid JWT token', async ({ request }) => {
+  const loginDto = LoginDto.createLoginWithCorrectCredentials()
+  const response = await request.post(`${serviceURL}${loginPath}`, {
+    data: loginDto,
+  })
+  const responseBody = await response.text()
+  const jwtStructure = /^eyJhb[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/
+  expect.soft(response.status()).toBe(StatusCodes.OK)
+  expect.soft(responseBody).toMatch(jwtStructure)
+})
 test('Login with incorrect credentials and get auth code 401', async ({ request }) => {
-  // Build and send a GET request to the server
   const loginDto = LoginDto.createLoginWithIncorrectCredentials()
   const response = await request.post(`${serviceURL}${loginPath}`, {
     data: loginDto,
@@ -16,36 +32,13 @@ test('Login with incorrect credentials and get auth code 401', async ({ request 
   console.log('response status:', response.status())
   expect(response.status()).toBe(StatusCodes.UNAUTHORIZED)
 })
-test('Login with Correct credentials and return code 200', async ({ request }) => {
-  // Build and send a GET request to the server
+test('Incorrect HTTP method returns 405 status code', async ({ request }) => {
   const loginDto = LoginDto.createLoginWithCorrectCredentials()
-  const response = await request.post(`${serviceURL}${loginPath}`, {
+  const response = await request.delete(`${serviceURL}${loginPath}`, {
     data: loginDto,
   })
-  console.log('response status:', response.status())
-  expect.soft(response.status()).toBe(StatusCodes.OK)
-  console.log(await response.text())
-})
-
-test('Successful authorization and create order', async ({ request }) => {
-  const loginDto = LoginDto.createLoginWithCorrectCredentials()
-  const response = await request.post(`${serviceURL}${loginPath}`, {
-    data: loginDto,
-  })
-  const jwt = await response.text() //define jwt
-  console.log('response status:', response.status())
-  expect.soft(response.status()).toBe(StatusCodes.OK)
-  console.log(await response.text())
-  const orderDto = OrderDto.createOrderWithRandomData()
-  orderDto.id = undefined
-  const orderResponse = await request.post(`${serviceURL}${orderPath}`, {
-    data: orderDto,
-    headers: {
-      Authorization: `Bearer ${jwt}`, //use jwt
-    },
-  })
-  const orderResponseJSON = await orderResponse.json()
-  console.log(orderResponseJSON)
-  expect.soft(orderResponseJSON.status).toBe('OPEN')
-  expect.soft(orderResponseJSON.id).toBeDefined()
+  const responseBody = await response.json()
+  expect.soft(response.status()).toBe(StatusCodes.METHOD_NOT_ALLOWED)
+  expect.soft(responseBody.status).toBe(405)
+  expect.soft(responseBody.error).toBe('Method Not Allowed')
 })
